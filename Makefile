@@ -100,14 +100,12 @@ linux/arch/arm/boot/zImage: TOOLCHAIN
 
 build/zImage: linux/arch/arm/boot/zImage | build
 	cp $< $@
-
 build/uImage: linux/arch/arm/boot/uImage  | build
 	cp $< $@
 ### Device Tree ###
 
 linux/arch/arm/boot/dts/%.dtb: TOOLCHAIN linux/arch/arm/boot/dts/%.dts  linux/arch/arm/boot/dts/zynq-pluto-sdr.dtsi
 	$(TOOLS_PATH) DTC_FLAGS=-@ make -C linux -j $(NCORES) ARCH=arm CROSS_COMPILE=$(CROSS_COMPILE) $(notdir $@)
-	cp $< $@
 build/%.dtb: linux/arch/arm/boot/dts/%.dtb | build
 	dtc -q -@ -I dtb -O dts $< | sed 's/axi {/amba {/g' | dtc -q -@ -I dts -O dtb -o $@
 
